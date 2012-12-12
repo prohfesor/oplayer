@@ -62,26 +62,31 @@ class Core {
       curl_setopt($ch0, CURLOPT_USERAGENT, $this->uagent);
       curl_setopt($ch0, CURLOPT_COOKIEFILE, $cookies);
       curl_setopt($ch0, CURLOPT_COOKIEJAR, $cookies);
-      // curl_setopt($ch0, CURLOPT_POSTFIELDS, "act=login&q=1&al_frame=1&expire=&captcha_sid=&captcha_key=&from_host=vk.com&from_protocol=http&ip_h=&email={$this->email}&pass={$this->pass}");
+//      curl_setopt($ch0, CURLOPT_POSTFIELDS, "act=login&q=1&al_frame=1&expire=&captcha_sid=&captcha_key=&from_host=vk.com&from_protocol=http&ip_h=&email={$this->email}&pass={$this->pass}");
       curl_setopt($ch0, CURLOPT_URL, 'http://m.vk.com/login');
-      // curl_setopt($ch0, CURLOPT_REFERER, 'http://vk.com/');
+//      curl_setopt($ch0, CURLOPT_REFERER, 'http://vk.com/');
       
       $body = $this->curl_redirect_exec($ch0);
+      
+// var_dump($body); die();
+      
       curl_close($ch0);
       preg_match_all("/ip_h=(\w+)/", $body, $matches);
       $ip_h = $matches[1][0];
+
+//var_dump($ip_h); die();
 
       $ch = curl_init();
       curl_setopt($ch, CURLOPT_HEADER, 1);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_POST, 1);
-//            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
       curl_setopt($ch, CURLOPT_USERAGENT, $this->uagent);
       curl_setopt($ch, CURLOPT_COOKIEFILE, $cookies);
       curl_setopt($ch, CURLOPT_COOKIEJAR, $cookies);
       curl_setopt($ch, CURLOPT_POSTFIELDS, "email={$this->email}&pass={$this->pass}");
       curl_setopt($ch, CURLOPT_URL, "https://login.vk.com/?act=login&_origin=http://m.vk.com&ip_h={$ip_h}&role=pda&utf8=1");
-      // curl_setopt($ch, CURLOPT_PORT , 443);
+//      curl_setopt($ch, CURLOPT_PORT , 443);
       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
       curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
       curl_setopt($ch, CURLOPT_REFERER, 'http://m.vk.com/login');
@@ -89,18 +94,21 @@ class Core {
       $body = $this->curl_redirect_exec($ch);
       curl_close($ch);
 
+//var_dump($body); die();
+
       $ch2 = curl_init();
       curl_setopt($ch2, CURLOPT_HEADER, 1);
       curl_setopt($ch2, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch2, CURLOPT_NOBODY, 0);
-//            curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, 1);
+      curl_setopt($ch2, CURLOPT_FOLLOWLOCATION, 1);
       curl_setopt($ch2, CURLOPT_COOKIEFILE, $cookies);
 
       curl_setopt($ch2, CURLOPT_COOKIEJAR, $cookies);
-      curl_setopt($ch2, CURLOPT_URL, 'http://oauth.vk.com/authorize?client_id='.$this->appId.'&scope=audio&response_type=token');
+      curl_setopt($ch2, CURLOPT_URL, 'http://oauth.vk.com/authorize?client_id='.$this->appId.'&scope=audio&response_type=token&redirect_uri=vk.com');
       $responce = $this->curl_redirect_exec($ch2);
       curl_close($ch2);
 
+//var_dump($responce); die();
 
       if ( strpos($responce, 'action="https://login.vk.com') ) {
         // return null;
